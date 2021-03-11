@@ -1,4 +1,4 @@
-all: clean build test
+all: install-dependencies clean build test
 
 clean:
 	scripts/clean.sh
@@ -9,4 +9,10 @@ build:
 test:
 	scripts/test.sh
 
-.PHONY: all clean build test
+.flag-installed-dependencies:
+	scripts/install_dependencies.sh
+	touch .flag-installed-dependencies
+
+install-dependencies: .flag-installed-dependencies
+
+.PHONY: all clean build test install-dependencies
