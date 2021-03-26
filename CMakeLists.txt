@@ -19,16 +19,21 @@ message("C++17 standard")
 set(CMAKE_CXX_STANDARD 17)
 
 message("loading headers")
-include_directories(./)
+include_directories(hdrs)
+
+file(GLOB LIBFLOW_SOURCE_FILES src/*.cc)
+
+add_library(flow SHARED ${LIBFLOW_SOURCE_FILES})
 
 list(APPEND MY_TESTS 
-    flow_test
+    synchronous_flow_test
+    asynchronous_flow_test
 )
 
 foreach(TARGET_TEST ${MY_TESTS})
     message("building target ${TARGET_TEST}")
-    add_executable(${TARGET_TEST} tests/${TARGET_TEST}.cc flow.cc)
-    target_link_libraries(${TARGET_TEST} gtest)
+    add_executable(${TARGET_TEST} tests/${TARGET_TEST}.cc)
+    target_link_libraries(${TARGET_TEST} gtest flow pthread)
     add_test(${TARGET_TEST} ${TARGET_TEST})
 endforeach()
 
