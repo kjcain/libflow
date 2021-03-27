@@ -18,11 +18,28 @@ namespace cain::flow {
 template <class T>
 class Buffer {
  public:
-  void push(T in);
-  T pull();
-  size_t count();
-  Buffer();
-  ~Buffer();
+  void push(T in) {
+    this->write_lock.lock();
+    this->work_queue.push(in);
+    this->write_lock.unlock();
+  }
+
+  bool try_pull(T *out) {
+    this->read_lock.lock();
+    if (!this->work_queue.empty()) {
+      this->read_lock.unlock();
+      return false;
+    }
+
+    *out = this->work_queue.front();
+
+    this->work_queue.pop();
+    this->read_lock.unlock();
+    return true;
+  }
+  size_t count() { return this->work_queue.size(); }
+  Buffer() {}
+  ~Buffer() {}
 
  private:
   std::queue<T> work_queue;

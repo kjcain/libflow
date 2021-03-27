@@ -21,10 +21,6 @@ set(CMAKE_CXX_STANDARD 17)
 message("loading headers")
 include_directories(hdrs)
 
-file(GLOB LIBFLOW_SOURCE_FILES src/*.cc)
-
-add_library(flow SHARED ${LIBFLOW_SOURCE_FILES})
-
 list(APPEND MY_TESTS 
     synchronous_flow_test
     asynchronous_flow_test
@@ -33,7 +29,7 @@ list(APPEND MY_TESTS
 foreach(TARGET_TEST ${MY_TESTS})
     message("building target ${TARGET_TEST}")
     add_executable(${TARGET_TEST} tests/${TARGET_TEST}.cc)
-    target_link_libraries(${TARGET_TEST} gtest flow pthread)
+    target_link_libraries(${TARGET_TEST} gtest pthread)
     add_test(${TARGET_TEST} ${TARGET_TEST})
 endforeach()
 

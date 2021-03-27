@@ -18,14 +18,14 @@ namespace cain::flow {
 
 class AdditionBlock : public Block<int, int, int> {
  public:
-  explicit AdditionBlock(int add_val) : Block<int, int, int>(add_val) {}
-  void work(int in, int param) { this->send_downstream(in + param); }
+  void work(int in, int param) override { this->send_downstream(in + param); }
+  explicit AdditionBlock(int add_val) : Block<int, int, int>(add_val, this->work) {}
 };
 
 class PrintBlock : public Block<int, int, nullptr_t> {
  public:
   PrintBlock() : Block<int, int, nullptr_t>(nullptr) {}
-  void work(int in, nullptr_t) {
+  void work(int in, nullptr_t) override {
     std::cout << in << std::endl;
     this->send_downstream(in);
   }
@@ -34,7 +34,7 @@ class PrintBlock : public Block<int, int, nullptr_t> {
 class SumBlock : public Block<int, nullptr_t, int *> {
  public:
   explicit SumBlock(int *acc) : Block<int, nullptr_t, int *>(acc) {}
-  void work(int in, int *accumulator) { *accumulator += in; }
+  void work(int in, int *accumulator) override { *accumulator += in; }
 };
 
 TEST(sync, basic) {
